@@ -14,6 +14,8 @@ ELEVENLABS_MODEL = os.environ.get("BOT_VOICE_MODEL", "eleven_multilingual_v2")
 
 # Upload-Post profile name (the "user" you create in the Upload-Post dashboard).
 UPLOAD_POST_USER = os.environ.get("UPLOAD_POST_USER", "wakeupin")
+# Separate Upload-Post profile for streamer clips, so the two niches stay on different accounts.
+CLIPS_UPLOAD_POST_USER = os.environ.get("CLIPS_UPLOAD_POST_USER", "clips")
 
 # Visual style appended to every shot so clips look like one film.
 STYLE = (
