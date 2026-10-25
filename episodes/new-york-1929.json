@@ -1,0 +1,31 @@
+{
+  "slug": "new-york-1929",
+  "title": "Wake Up In New York, 29 October 1929",
+  "beats": [
+    {"narration": "You wake up on Wall Street. By tonight, almost everyone you know will be broke.",
+     "shot_prompt": "First-person POV waking up in a cramped 1920s New York boarding house room, morning light through a dusty window, a folded newspaper on the wooden floor"},
+    {"narration": "It's Tuesday, October 29th, 1929. Five days ago the stock market cracked. Today it breaks completely.",
+     "shot_prompt": "POV walking down a crowded Wall Street in 1929, men in fedoras and overcoats hurrying, vintage cars honking, overcast sky, stone bank facades"},
+    {"narration": "So many shares change hands that the ticker tape runs hours behind. Nobody knows what anything is worth.",
+     "shot_prompt": "POV on a chaotic 1929 stock exchange trading floor, paper ticker tape piling up, traders shouting and waving slips, handheld camera pushing through the crowd"},
+    {"narration": "People who borrowed money to buy stocks lose everything by lunch. Crowds gather outside the banks.",
+     "shot_prompt": "POV in an anxious crowd outside a 1929 New York bank, people pressing toward closed doors, police officers holding them back, sepia tones"},
+    {"narration": "This is the start of the Great Depression. It will last about ten years.",
+     "shot_prompt": "POV standing on an empty Wall Street at dusk, newspapers blowing across the cobblestones, street lamps flickering on, melancholic mood"},
+    {"narration": "So, what would you have done with your money? Best answer picks where I take you tomorrow.",
+     "shot_prompt": "POV looking down at a 1929 newspaper lying on wet cobblestones at night, slow push in, lamplight reflections"}
+  ],
+  "peak_beat": 2,
+  "captions": {
+    "tiktok": "You wake up on Wall Street on Black Tuesday, 29 October 1929. The day the stock market crash began the Great Depression. #history #1929 #blacktuesday #wakeupin #aivideo",
+    "instagram": "Wall Street, 29 October 1929. Would you have survived Black Tuesday? Send this to the friend who'd panic sell first. #history #1929 #wakeupin #aivideo",
+    "x": "You wake up on Wall Street on 29 October 1929. What do you do with your money?"
+  },
+  "facts_to_check": [
+    "Black Tuesday was Tuesday 29 October 1929",
+    "Black Thursday (24 October 1929) was five days earlier",
+    "Ticker tape ran hours behind due to record volume",
+    "Margin buyers were wiped out; crowds gathered at banks and the exchange",
+    "The Great Depression lasted roughly a decade"
+  ]
+}
