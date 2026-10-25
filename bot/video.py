@@ -35,7 +35,9 @@ def generate_clip(prompt: str, dest: Path, timeout_s: int = 900) -> Path:
         },
     }
     r = requests.post(f"{BASE}/interactions", headers=headers, json=body, timeout=600)
-    r.raise_for_status()
+    if not r.ok:
+        # e.g. 429 "limit: 0 ... on Free Tier" means billing is not enabled on the key's project
+        raise RuntimeError(f"Gemini video request failed ({r.status_code}): {r.text[:500]}")
     uri = _find_video_uri(r.json())
     file_id = uri.rstrip("/").split("/")[-1].split(":")[0]
 
