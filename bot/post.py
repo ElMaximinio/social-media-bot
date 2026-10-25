@@ -1,4 +1,4 @@
-"""Publish the cuts through Upload-Post, with the AI-generated label always on."""
+"""Publish through Upload-Post. AI-made episodes always carry the AI-generated label."""
 import json
 import uuid
 from pathlib import Path
@@ -11,20 +11,21 @@ URL = "https://api.upload-post.com/api/upload"
 
 
 def publish(platform: str, video: Path, caption: str, scheduled_date: str | None = None,
-            timezone: str = "Europe/Paris") -> dict:
+            timezone: str = "Europe/Paris", user: str | None = None, ai_generated: bool = True) -> dict:
     key = config.require("UPLOAD_POST_API_KEY")
     fields = {
-        "user": config.UPLOAD_POST_USER,
+        "user": user or config.UPLOAD_POST_USER,
         "platform[]": platform,
         "title": caption,
         f"{platform}_title": caption,
-        "is_ai_generated": "true",
         "async_upload": "true",
     }
-    if platform == "tiktok":
-        fields["is_aigc"] = "true"
-    if platform == "x":
-        fields["made_with_ai"] = "true"
+    if ai_generated:
+        fields["is_ai_generated"] = "true"
+        if platform == "tiktok":
+            fields["is_aigc"] = "true"
+        if platform == "x":
+            fields["made_with_ai"] = "true"
     if scheduled_date:
         fields["scheduled_date"] = scheduled_date
         fields["timezone"] = timezone

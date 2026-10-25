@@ -4,6 +4,11 @@
   python -m bot make output/new-york-1929                          # clips + voice + edit
   python -m bot make output/new-york-1929 --dry-run                # offline test with placeholders
   python -m bot post output/new-york-1929 [--at 2026-10-29T18:00:00]
+
+Streamer clips (only creators who allow clipping):
+  python -m bot clip find source.mp4 --creator "Name" --slug name-moment   # best moments + hook
+  python -m bot clip make output/clips/name-moment                         # render tiktok.mp4
+  python -m bot clip post output/clips/name-moment [--at ...]
 """
 import argparse
 import json
@@ -58,6 +63,26 @@ def cmd_post(args) -> None:
     print(json.dumps(post.publish_episode(Path(args.episode_dir), args.at), indent=2))
 
 
+def cmd_clip_find(args) -> None:
+    from .clips import make as clips
+    rules = Path(args.rules).read_text() if args.rules else ""
+    clip_dir = clips.find(args.source, args.creator, args.slug, rules, args.count, args.min, args.max)
+    print(f"Wrote {clip_dir / 'clip.json'} (top pick) and candidates.json:\n")
+    for i, c in enumerate(json.loads((clip_dir / "candidates.json").read_text())):
+        print(f"[{i}] {c['start']:.1f}-{c['end']:.1f} s  {c['hook']}\n    {c['why']}")
+
+
+def cmd_clip_make(args) -> None:
+    from .clips import make as clips
+    res = clips.make(Path(args.clip_dir), dry_run=args.dry_run)
+    print(json.dumps({k: str(v) for k, v in res.items()}, indent=2))
+
+
+def cmd_clip_post(args) -> None:
+    from .clips import make as clips
+    print(json.dumps(clips.post(Path(args.clip_dir), args.at), indent=2))
+
+
 def main() -> None:
     p = argparse.ArgumentParser(prog="bot")
     sub = p.add_subparsers(required=True)
@@ -66,6 +91,17 @@ def main() -> None:
     m.set_defaults(fn=cmd_make)
     po = sub.add_parser("post"); po.add_argument("episode_dir"); po.add_argument("--at")
     po.set_defaults(fn=cmd_post)
+
+    c = sub.add_parser("clip", help="streamer clip edits").add_subparsers(required=True)
+    cf = c.add_parser("find"); cf.add_argument("source"); cf.add_argument("--creator", required=True)
+    cf.add_argument("--slug", required=True); cf.add_argument("--rules", help="text file with campaign rules")
+    cf.add_argument("--count", type=int, default=3)
+    cf.add_argument("--min", type=float, default=20); cf.add_argument("--max", type=float, default=60)
+    cf.set_defaults(fn=cmd_clip_find)
+    cm = c.add_parser("make"); cm.add_argument("clip_dir"); cm.add_argument("--dry-run", action="store_true")
+    cm.set_defaults(fn=cmd_clip_make)
+    cp = c.add_parser("post"); cp.add_argument("clip_dir"); cp.add_argument("--at")
+    cp.set_defaults(fn=cmd_clip_post)
     args = p.parse_args()
     args.fn(args)
 

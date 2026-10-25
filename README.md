@@ -44,3 +44,37 @@ Hand-written episodes live in `episodes/`; copy one to `output/<slug>/episode.js
 Generated clips are cached, so re-running `make` after editing captions or timing costs nothing.
 
 Rule: review every episode (facts and video) before `post` for the first two weeks.
+
+## Streamer clips (`bot/clips/`)
+
+A second content type: vertical TikTok edits of streamer and YouTuber moments.
+
+**Only clip creators who allow it.** Use a clipping campaign (Whop Content Rewards, or a creator's
+own program in their Discord) or written permission. Campaigns usually give the source footage, the
+rules (credit line, required hashtags, which platforms) and pay per 1,000 views. Reposting
+other people's streams without permission risks takedowns and copyright strikes, and TikTok shows
+unedited reposts to fewer people, so every clip gets real edits (layout, captions, hook, zooms).
+
+How a clip is made:
+
+1. **Find** (`clip find`): ElevenLabs Scribe transcribes the source with word timings, then Claude
+   picks the best 20–60 s moments and writes a hook and caption for each (`candidates.json`).
+   Without `ANTHROPIC_API_KEY` it saves `transcript.txt` and you fill in `clip.json` yourself.
+2. **Make** (`clip make`):
+   - cuts the moment and drops long quiet pauses (screams and laughs are kept),
+   - finds faces (OpenCV YuNet) and picks a layout: **stack** (webcam on top, gameplay below),
+     **track** (9:16 crop that follows the speaker) or **fit** (whole frame on a blurred copy),
+   - punches in on the loudest moments, adds word-by-word captions (spoken word in yellow),
+     a hook title and an optional credit line, and evens out the volume.
+3. **Post** (`clip post`): Upload-Post, to a separate profile (`CLIPS_UPLOAD_POST_USER`, default
+   `clips`) so clips don't mix with the Wake Up In… account. Campaign `required_tags` are added to the caption.
+
+```bash
+python -m bot clip find source.mp4 --creator "Name" --slug name-moment --rules rules.txt
+# review output/clips/name-moment/clip.json (start, end, hook, caption, layout)
+python -m bot clip make output/clips/name-moment       # writes tiktok.mp4 and render.json
+python -m bot clip post output/clips/name-moment
+```
+
+`source` can be a URL (downloaded with yt-dlp) where the network allows it; cloud sessions
+usually can't reach YouTube or Twitch, so pass a local file there.
