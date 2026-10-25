@@ -1,0 +1,31 @@
+{
+  "slug": "salem-1692",
+  "title": "Wake Up In Salem, 1692",
+  "beats": [
+    {"narration": "You wake up in Salem. Someone just said your name in court.",
+     "shot_prompt": "First-person POV waking on a straw mattress in a dark 17th-century wooden house in Massachusetts, fists pounding on the door, cold dawn light through gaps in the planks"},
+    {"narration": "It's 1692. A few girls in the village have been having strange fits, and they're naming the people they say caused them.",
+     "shot_prompt": "POV walking down a muddy Puritan village street in 1692, villagers in plain dark clothing turning away and avoiding eye contact, grey overcast sky"},
+    {"narration": "You're brought into a packed meeting house. There's no lawyer to defend you, and the judges are already leaning forward.",
+     "shot_prompt": "POV inside a crowded 1692 Puritan meeting house, wooden benches full of villagers staring, stern magistrates in black at a raised table, candlelight"},
+    {"narration": "The main evidence is what the accusers say they saw in dreams and visions. You can't prove a dream wrong.",
+     "shot_prompt": "POV facing young accusers in a 1692 courtroom who scream and point toward the camera, villagers gasping, dramatic candlelit shadows"},
+    {"narration": "By the end, more than two hundred people are accused, and twenty of them are executed.",
+     "shot_prompt": "POV at dusk watching a line of accused villagers being led away along a dirt road in 1692 Massachusetts, bare trees, fog, somber mood"},
+    {"narration": "So, how would you have proved you weren't a witch? Best answer picks where I take you tomorrow.",
+     "shot_prompt": "POV slowly turning back toward a 1692 wooden meeting house at night, a single lantern glowing in the window, fog rolling across the ground"}
+  ],
+  "peak_beat": 3,
+  "captions": {
+    "tiktok": "You wake up in Salem in 1692 and you've just been accused of witchcraft. The Salem witch trials in first person. #history #salemwitchtrials #halloween #wakeupin #aivideo",
+    "instagram": "Salem, 1692. You've been accused. How do you get out of this one? Send this to the friend who'd be accused first. #history #salem #halloween #wakeupin #aivideo",
+    "x": "You wake up in Salem in 1692 and someone has just named you as a witch. How do you prove you're not?"
+  },
+  "facts_to_check": [
+    "Salem witch trials took place in 1692 in colonial Massachusetts",
+    "Accusations began with girls having fits",
+    "Accused had no defense lawyers",
+    "Spectral evidence (visions/dreams) was admitted",
+    "More than 200 accused; 20 executed (19 hanged, 1 pressed to death)"
+  ]
+}
