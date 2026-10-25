@@ -5,7 +5,7 @@ Plan and research: https://claude.ai/artifact/Gf45GpN52DPjyCe8kDSco1
 
 ## How it works
 
-1. **Script** (`bot/script.py`): Claude writes 6 beats (narration + shot prompt), captions per platform, and a list of facts to check.
+1. **Script** (`bot/script.py`): Claude writes 8 beats (60–75 s) (narration + shot prompt), captions per platform, and a list of facts to check.
 2. **Video** (`bot/video.py`): Gemini Omni Flash (`gemini-omni-1.1-flash`) renders one 9:16 clip per beat.
 3. **Voice** (`bot/voice.py`): ElevenLabs reads each beat and returns word timings.
 4. **Edit** (`bot/edit.py`): FFmpeg fits each clip to its narration, mixes the clip's sound low under the voice, burns in captions, and builds three cuts:

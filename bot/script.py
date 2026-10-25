@@ -8,8 +8,9 @@ time-travel videos. Every episode drops the viewer into one specific place, date
 
 Rules:
 - Beat 1 is the hook: one sentence, spoken in the first 3 seconds, that starts "You wake up".
-- 6 beats total. Each beat's narration is 14-22 words (about 6-9 seconds spoken).
-- Escalate: place and date, then three rising beats, then the outcome, then a closing question
+- 8 beats total. Each beat's narration is 18-24 words (about 7-9 seconds spoken), so the full
+  episode runs 60-75 seconds (TikTok Creator Rewards needs 60 s+).
+- Escalate: place and date, then five rising beats, then the outcome, then a closing question
   that invites a comment (and promises the best answer picks a future episode).
 - Second person, present tense, plain words, no exclamation marks.
 - Only well-established historical facts. List every factual claim in facts_to_check.
@@ -27,8 +28,8 @@ TOOL = {
             "title": {"type": "string", "description": "e.g. Wake Up In New York, 29 October 1929"},
             "beats": {
                 "type": "array",
-                "minItems": 6,
-                "maxItems": 6,
+                "minItems": 8,
+                "maxItems": 8,
                 "items": {
                     "type": "object",
                     "properties": {
@@ -38,7 +39,7 @@ TOOL = {
                     "required": ["narration", "shot_prompt"],
                 },
             },
-            "peak_beat": {"type": "integer", "description": "index (1-5) of the most striking beat, used for the X cut"},
+            "peak_beat": {"type": "integer", "description": "index (1-7) of the most striking beat, used for the X cut"},
             "captions": {
                 "type": "object",
                 "properties": {
