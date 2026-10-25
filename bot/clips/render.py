@@ -76,6 +76,23 @@ def keep_ranges(words: list[dict], total: float, level: np.ndarray | None = None
     return [(round(a, 3), round(min(b, total), 3)) for a, b in ranges if b > a]
 
 
+def subtract(ranges, cuts) -> list[tuple[float, float]]:
+    """Remove the cut intervals from the keep ranges."""
+    out = list(ranges)
+    for ca, cb in cuts:
+        nxt = []
+        for a, b in out:
+            if cb <= a or ca >= b:
+                nxt.append((a, b))
+                continue
+            if ca > a:
+                nxt.append((a, ca))
+            if cb < b:
+                nxt.append((cb, b))
+        out = nxt
+    return [(round(a, 3), round(b, 3)) for a, b in out if b - a > 0.05]
+
+
 def remap(t: float, ranges: list[tuple[float, float]]) -> float | None:
     """Time in the tightened clip for time t in the original, or None if t was cut."""
     out = 0.0
@@ -212,8 +229,10 @@ def zoom_expr(peaks: list[float], amount: float = 0.12, ease: float = 0.12, hold
 
 # ---------- compose ----------
 
-def layout_filter(kind: str, src_w: int, src_h: int, faces: dict | None) -> tuple[str, int]:
-    """Filter chain from [0:v] to [base] at W x H, and the y of the caption line."""
+def layout_filter(kind: str, src_w: int, src_h: int, faces: dict | None,
+                  box: list[int] | None = None) -> tuple[str, int]:
+    """Filter chain from [0:v] to [base] at W x H, and the y of the caption line.
+    box (x, y, w, h in source pixels) limits the fit layout to one area, e.g. to keep a prop in frame."""
     if kind == "stack":
         fx, fy, fw, fh = layout.facecam_box(faces, src_w, src_h, W / TOP_H)
         game_h = H - TOP_H
@@ -230,16 +249,21 @@ def layout_filter(kind: str, src_w: int, src_h: int, faces: dict | None) -> tupl
         keys = layout.track_keyframes(faces, scale_w, W) if faces else [(0, (scale_w - W) / 2)]
         x = layout.piecewise_expr(keys)
         return (f"[0:v]scale={scale_w}:{scale_h},crop={W}:{H}:'{x}':(ih-{H})/2[base]"), int(H * 0.68)
-    # fit: whole frame over a blurred, zoomed copy
+    # fit: whole frame (or the box) over a blurred, zoomed copy
+    bx, by, bw, bh = box or (0, 0, src_w, src_h)
+    panel_h = min(int(round(bh * W / bw / 2) * 2), int(H * 0.62) // 2 * 2)
+    panel_w = min(W, int(round(bw * panel_h / bh / 2) * 2))
+    caption_y = min(H // 2 + panel_h // 2 + 110, int(H * 0.78))
     return (f"[0:v]split=2[bg][fg];"
             f"[bg]scale=-2:{H},crop={W}:{H},gblur=sigma=40,eq=brightness=-0.12[bgb];"
-            f"[fg]scale={W}:-2[fgs];"
-            f"[bgb][fgs]overlay=(W-w)/2:(H-h)/2[base]"), int(H * 0.70)
+            f"[fg]crop={bw}:{bh}:{bx}:{by},scale={panel_w}:{panel_h},setsar=1[fgs];"
+            f"[bgb][fgs]overlay=(W-w)/2:(H-h)/2[base]"), caption_y
 
 
-def compose(src: Path, dest: Path, kind: str, faces: dict | None, ass: Path, peaks: list[float]) -> Path:
+def compose(src: Path, dest: Path, kind: str, faces: dict | None, ass: Path, peaks: list[float],
+            box: list[int] | None = None) -> Path:
     src_w, src_h = layout.video_size(src)
-    chain, _ = layout_filter(kind, src_w, src_h, faces)
+    chain, _ = layout_filter(kind, src_w, src_h, faces, box)
     z = zoom_expr(peaks)
     ass_path = str(ass).replace(":", "\\:").replace("'", "\\'")
     vf = (f"{chain};[base]fps={FPS},scale=w='trunc({W}*({z})/2)*2':h='trunc({H}*({z})/2)*2':eval=frame,"

@@ -81,3 +81,13 @@ def test_snap_to_word_edges():
 def test_required_tags_added_once():
     spec = {"caption": "crazy clip #Kai", "campaign": {"required_tags": ["#kai", "#clips"]}}
     assert caption_with_tags(spec) == "crazy clip #Kai #clips"
+
+
+def test_subtract_cut_out():
+    assert render.subtract([(0.0, 10.0)], [(2.0, 4.0)]) == [(0.0, 2.0), (4.0, 10.0)]
+    assert render.subtract([(0.0, 3.0), (5.0, 9.0)], [(2.0, 6.0)]) == [(0.0, 2.0), (6.0, 9.0)]
+
+
+def test_fit_box_panel_and_caption():
+    chain, y = render.layout_filter("fit", 1280, 720, None, [470, 80, 560, 610])
+    assert "crop=560:610:470:80" in chain and y < 1920 * 0.8

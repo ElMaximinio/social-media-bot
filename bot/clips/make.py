@@ -12,6 +12,8 @@ A clip folder holds clip.json:
   "caption": "TikTok caption #tags",
   "layout": "auto",                         # auto | stack | track | fit
   "tighten": true,                          # cut long quiet pauses
+  "cut_out": [[140.0, 152.5]],              # optional: source seconds to drop (slow parts)
+  "crop": [360, 110, 680, 580],             # optional, fit layout: area to show (x, y, w, h)
   "zooms": null                             # list of seconds to punch in, or null for loud moments
 }
 """
@@ -108,11 +110,13 @@ def make(clip_dir: Path, dry_run: bool = False) -> dict:
     ranges = [(0.0, total)]
     if spec.get("tighten", True) and words:
         ranges = render.keep_ranges(words, total, level)
-        if len(ranges) > 1:
-            src = render.tighten(cut, ranges, work / "tight.mp4")
-            words = render.remap_words(words, ranges)
-            total = duration(src)
-            level = render.loudness(src)
+    cuts = [(a - spec["start"], b - spec["start"]) for a, b in spec.get("cut_out") or []]
+    ranges = render.subtract(ranges, cuts)
+    if len(ranges) > 1 or ranges[0] != (0.0, round(total, 3)):
+        src = render.tighten(cut, ranges, work / "tight.mp4")
+        words = render.remap_words(words, ranges)
+        total = duration(src)
+        level = render.loudness(src)
 
     faces = layout.detect_faces(src)
     kind = spec.get("layout", "auto")
@@ -123,11 +127,12 @@ def make(clip_dir: Path, dry_run: bool = False) -> dict:
     peaks = zooms if zooms is not None else render.loud_peaks(level)
 
     src_w, src_h = layout.video_size(src)
-    _, caption_y = render.layout_filter(kind, src_w, src_h, faces)
+    box = spec.get("crop")
+    _, caption_y = render.layout_filter(kind, src_w, src_h, faces, box)
     ass = render.write_ass(words, work / "captions.ass", total, caption_y,
                            hook=render.wrap_hook(spec.get("hook", "")), credit=spec.get("credit", ""))
     out = clip_dir / "tiktok.mp4"
-    render.compose(src, out, kind, faces, ass, peaks)
+    render.compose(src, out, kind, faces, ass, peaks, box)
 
     report = {
         "layout": kind,
